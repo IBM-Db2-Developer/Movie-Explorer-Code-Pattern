@@ -1,0 +1,10 @@
+export const IS_PROD = process.env.NODE_ENV === 'production';
+export const BASE_HOST = '<BASE HOST>';
+export const BASE_WEBSOCKET = `wss://${BASE_HOST}`;
+export const MOVIE_WEBSOCKET = `${BASE_WEBSOCKET}/movie`;
+export const BASE_URL = `https://${BASE_HOST}/`;
+export const REGISTER_URL = `${BASE_URL}register`;
+export const GENRES_URL = `${BASE_URL}genres`;
+export const PRODUCTION_COMPANIES_URL = `${BASE_URL}productionCompanies`;
+export const RECOMMENDATIONS_URL = `${BASE_URL}recommendations`;
+export const LOCAL_STORAGE_KEY = 'db2movierecommender';

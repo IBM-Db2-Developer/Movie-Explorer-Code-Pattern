@@ -1,0 +1,10 @@
+$feature-flags: (
+  enable-css-custom-properties: true,
+  grid-columns-16: true,
+  ui-shell: true,
+);
+
+/* stylelint-disable */
+@import 'carbon-components/scss/globals/scss/styles.scss';
+@import '@carbon/ibm-cloud-cognitive-cdai/scss/index.scss';
+@import '@carbon/motion/scss/motion';

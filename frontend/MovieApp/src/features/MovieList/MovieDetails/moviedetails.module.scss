@@ -1,0 +1,27 @@
+.card {
+  display: grid;
+  grid-column-gap: 12px;
+  grid-template-columns: 96px auto;
+  padding-bottom: $spacing-04;
+}
+
+.details {
+  display: grid;
+  grid-template-rows: min-content min-content auto auto auto;
+  p {
+    margin-right: $spacing-03;
+  }
+}
+
+.tag-container {
+  align-self: end;
+  height: 32px;
+}
+
+.star-container {
+  align-items: center;
+  display: grid;
+  grid-column-gap: 12px;
+  grid-template-columns: min-content min-content;
+  height: 48px;
+}

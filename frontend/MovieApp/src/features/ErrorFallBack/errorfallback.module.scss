@@ -1,0 +1,23 @@
+.error-container {
+  align-items: center;
+  background: $ui-background;
+  display: grid;
+  height: 100%;
+  justify-content: center;
+  left: 0;
+  padding: $spacing-03;
+  position: absolute;
+  top: 0;
+  white-space: pre-line;
+  width: 100%;
+  z-index: 999999;
+
+  :global {
+    .ide-empty-state__title {
+      @include carbon--type-style('productive-heading-04');
+    }
+    .ide-empty-state__body {
+      @include carbon--type-style('productive-heading-03');
+    }
+  }
+}

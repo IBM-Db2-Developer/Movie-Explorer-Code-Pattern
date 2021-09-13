@@ -1,0 +1,38 @@
+.star-rating {
+  display: flex;
+  align-items: center;
+  width: 160px;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+  position: relative;
+}
+
+.star-rating input {
+  display: none;
+}
+
+.star-rating > label {
+  width: 16px;
+  height: 16px;
+  font-family: Arial;
+  font-size: 16px;
+  transition: 0.2s ease;
+  color: gold;
+  cursor: pointer;
+}
+
+.star-rating label:hover {
+  color: #cecece;
+  transition: 0.2s ease;
+}
+
+.star-rating label::before {
+  content: '\2606';
+  position: absolute;
+  top: 0px;
+  line-height: 26px;
+}
+
+.checked-label::before {
+  content: '\2605' !important;
+}

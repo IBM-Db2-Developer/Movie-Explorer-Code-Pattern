@@ -1,0 +1,9 @@
+.name {
+  height: 50px;
+}
+.disabled-link {
+  a {
+    pointer-events: none;
+  }
+  cursor: not-allowed;
+}
