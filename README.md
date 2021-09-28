@@ -1,17 +1,32 @@
 # Movie Recommender
 
-Steps:
+This code pattern is a web application that helps you find new movies to watch and explore the relationships between movies, their genres, and production companies! It's been built to show you how you can use the power of Db2, Db2 REST, Db2 Graph, and Db2 Python UDFs to simply build and deploy applications with complex functionality.
+
+When the reader has completed this code pattern, they will understand how to:
+
+- Deploy Db2, Db2 REST, and Db2 Graph via Docker
+- Call Db2 REST services
+- Embed Db2 Graph UI into web applications
+- Create Db2 Python UDFs that call libraries like Turi Create, Apple's machine learning library in Python
+
+## Prerequisites
+
+1. Docker
+2. Python 3
+
+## Steps
 
 1. Clone this repo
-2. Run Db2 Docker containers
-3. Setup SSL
-4. Build & run the Movie API (Backend) Docker container
-5. Setup the database
-6. Setup the REST services
-7. Setup Db2 Graph
-8. Setup & run the frontend
+2. Setup IBM Cloud Container Registry
+3. Run Db2 Docker containers
+4. Setup SSL
+5. Build & run the Movie API (Backend) Docker container
+6. Setup the database
+7. Setup the REST services
+8. Setup Db2 Graph
+9. Setup & run the frontend
 
-## 1. Clone this repo
+### 1. Clone this repo
 
 The first step to deploying your own movie recommender application is to clone this repo so you have the required resources. Simply run the following command:
 
@@ -19,7 +34,26 @@ The first step to deploying your own movie recommender application is to clone t
 git clone https://github.com/tanmayb123/movierecommender-db2
 ```
 
-## 2. Run Db2 Docker containers
+### 2. Setup IBM Cloud Container Registry
+
+This code pattern will make use of certain docker images only available on the IBM Cloud Container Registry. In order to access them, sign up for a free [IBM Cloud account here](https://cloud.ibm.com), and then follow [these steps](https://cloud.ibm.com/docs/cli?topic=cli-getting-started) to setup the IBM Cloud CLI on your machine. Follow steps 1-3, and note that you will not need to access cloud foundry services for this code pattern.
+
+After setting up the CLI and logging into IBM Cloud through it, you will need to enable the "container registry" plugin. You can do so by running the following command:
+
+```bash
+ibmcloud plugin install container-registry
+```
+
+Then, run the following commands to setup the container registry such that we can find the required images:
+
+```
+ibmcloud cr region-set global
+ibmcloud cr login
+```
+
+Now, when you run the relevant `docker pull` and `docker run` commands, they will be able to grab the correct images.
+
+### 3. Run Db2 Docker containers
 
 As this code pattern uses Db2 to store data and interface with the recommendation algorithm, Db2 REST to communicate with Db2, and Db2 Graph to visualize relationships within the data, we need to deploy these 3 main components first.
 
@@ -36,6 +70,8 @@ All 3 services, Db2, Db2 REST, and Db2 Graph, can be deployed as Docker containe
 docker run -itd --name movie_db2 --privileged=true -p 50000:50000 -e LICENSE=accept -e DB2INST1_PASSWORD=filmdb2pwd -e DBNAME=MOVIES -v /root/movieappdb:/database ibmcom/db2
 ```
 
+Be careful when running this container — it takes a few minutes for Db2 to really get started. We will use it in step 6 (setting up the database), which is a few minutes away, so it will have started by then. However, if you need to restart this container, or deploy a new instance of it, keep in mind that you should wait around 3-4 minutes for Db2 to start internally before you run commands against it. Running commands prematurely can put your database in an intermediate state that's hard to recover from.
+
 Then, we can deploy Db2 REST. The following command will:
 
 - Create a container called `db2rest`.
@@ -48,7 +84,7 @@ Then, we can deploy Db2 REST. The following command will:
 docker run -it --name=db2rest --hostname=<INSERT HOSTNAME> -p 50050:50050 -e LICENSE=accept -e DB2REST_USE_HTTP=true icr.io/obs/hdm/db2rest:latest-amd64
 ```
 
-And finally, Db2 Graph. The following command will:
+The container will prompt you to hit `Ctrl-P Ctrl-Q` once it has started, so you can exit. Once that's done, you can deploy Db2 Graph. The following command will:
 
 - Create a container called `db2graph`.
 - Specify the hostname of the server running the Db2 container (you must set this value in the command).
@@ -60,7 +96,9 @@ And finally, Db2 Graph. The following command will:
 docker run -it --name=db2graph --hostname=<INSERT HOSTNAME> -v /root/db2graphstorage:/db2graph -p 8182:8182 -p 3000:3000 -e LICENSE=accept icr.io/obs/hdm/db2graph:latest-amd64
 ```
 
-## 3. Setup SSL
+This container will once again prompt you to hit `Ctrl-P Ctrl-Q` once it has started, so you can exit.
+
+### 4. Setup SSL
 
 In order to secure our connections, and to make sure that we can connect to the backend from the web app frontend, we're going to apply TLS encryption to some of our services. Specifically, Db2 Graph and Movie API backend will be secured with TLS. To begin, you'll need an SSL certificate — you can generate one with a service like Let's Encrypt. If you do not have a domain name associated with the application, and would like a certificate for a bare IP, you can use a service like ZeroSSL.
 
@@ -78,7 +116,7 @@ docker exec -it db2graph manage replaceTLSCert
 docker exec -it db2graph manage restart
 ```
 
-## 4. Build & run the Movie API (Backend) container
+### 5. Build & run the Movie API (Backend) container
 
 Instead of the frontend working with Db2 REST directly to get movie recommendations and movie information, it communicates with the Movie API, the backend of this application. It will then, in turn, deal with processes like searching through movies and handling Db2 REST jobs. Instead of having to build and deploy the API yourself, this repo ships with a Dockerfile that does it all for you. To build and run the container, simply run the following within the repo directory:
 
@@ -98,7 +136,7 @@ After the container is done building, you can run it with the following command.
 docker run --name=moviebackend -v /root/db2graphstorage/ssl:/movieapp_ssl -p 443:443 -d movieapi:latest
 ```
 
-## 5. Setup the database
+### 6. Setup the database
 
 In order for the backend to have content to serve and the frontend to have content to display, we need to setup the database that we've deployed, which consists of:
 
@@ -130,6 +168,8 @@ docker exec -it movie_db2 su - db2inst1 -c "db2 -tvf /setup.sql"
 This will unzip the movie data and run the setup SQL script. The script will create the tables, load the data, and setup the UDF. However, before we're done setting everything up, we need to do a bit more ceremony for the UDF to execute properly:
 
 ```bash
+docker exec -it movie_db2 yum install -y python3
+docker exec -it movie_db2 su - db2fenc1 -c "python3 -m pip install -U --user pip"
 docker exec -it movie_db2 su - db2fenc1 -c "python3 -m pip install turicreate"
 docker exec movie_db2 chown db2fenc1 /database/config/db2fenc1/rec_udf.py
 docker exec movie_db2 chown db2fenc1 /database/config/db2inst1/sqllib/adm/.fenced
@@ -141,7 +181,7 @@ docker exec -it movie_db2 su - db2inst1 -c "db2start"
 
 This will install the required Python dependencies, make sure the files required to execute the UDF are owned by the right user, set the Python path so Db2 knows where to find the interpreter, and then restart Db2 by terminating connections, stopping the server, and starting it again.
 
-## 6. Setup the REST services
+### 7. Setup the REST services
 
 The backend that we've deployed through a container will communicate with Db2 through Db2 REST, and will specifically make use of Db2 REST "services" that enable predefined queries to be run with new parameters. For example, this application has services to find movies by their ID and name, to find a movie's genres and production companies, and to recommend new movies based on past ratings from a user.
 
@@ -154,7 +194,7 @@ python3 setup_rest.py
 
 The Python script will connect to Db2 REST, setup the metadata it requires within the database (for example, the tables that contain information on which services exist and the parameters they expect), and then actually create the services.
 
-## 7. Setup Db2 Graph
+### 8. Setup Db2 Graph
 
 Db2 Graph is able to automatically look at the schema of tables in your database and determine how to represent them as edges and vertices in a graph. You can setup Graph through a web UI or through the command line — in this example, we'll use the command line. We'll start off by opening a new session with the Graph server itself:
 
@@ -220,7 +260,7 @@ Db2GRAPH-1000I Closed connection 'MovieDB' for session 'setup_session'.
 Db2GRAPH-1000I Closed session 'setup_session'.
 ```
 
-## 8. Setup & run the frontend
+### 9. Setup & run the frontend
 
 You're about to be able to run the application! You simply need to configure the frontend to point to the right locations to find the Graph server, Movie API, and SSL certificates, and install the required dependencies.
 
