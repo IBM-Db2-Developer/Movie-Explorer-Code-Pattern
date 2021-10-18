@@ -212,7 +212,7 @@ root@bluejay3:~/MovieRecommenderApplication/setup/rest# docker exec -it db2graph
 Enter sessionName: setup_session
 Enter connectionName: MovieDB
 Enter description: 
-Enter hostname: 52.117.200.43
+Enter hostname: host.docker.internal
 Use SSL [y/N (default)]: N
 Enter port [50000]: 
 Enter database: MOVIES
