@@ -13,6 +13,7 @@ When the reader has completed this code pattern, they will understand how to:
 
 1. Docker
 2. Python 3
+    1. requests module
 
 ## Steps
 
