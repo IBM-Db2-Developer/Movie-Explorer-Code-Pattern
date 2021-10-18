@@ -15,6 +15,10 @@ When the reader has completed this code pattern, they will understand how to:
 2. Python 3
     1. requests module
 
+## Flow
+
+![Flow](flow.png)
+
 ## Steps
 
 1. Clone this repo
