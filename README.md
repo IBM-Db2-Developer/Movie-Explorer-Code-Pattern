@@ -19,6 +19,10 @@ When the reader has completed this code pattern, they will understand how to:
 
 [![Movie Explorer Demo](https://yt-embed.herokuapp.com/embed?v=Ik6YvPBplHY)](https://www.youtube.com/watch?v=Ik6YvPBplHY "Movie Explorer Demo")
 
+The application starts by allowing the user to rate movies they've already seen in order to get an understanding of their taste profile. Once the user has provided this data by searching for and rating movies, they can ask the system for recommendations by clicking on "Find Recommendations" on the top right. The application will recommend movies the user is likely to enjoy.
+
+At any point, the user can click the "Explore similar movies" button on any movie to view a graph of movies that share at least 1 genre AND production company with the movie. Users can interact with this graph, traversing in and out of edges to understand the relationships between movies, production companies, and genres.
+
 ## Flow
 
 ![Flow](flow.png)
