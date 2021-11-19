@@ -15,6 +15,10 @@ When the reader has completed this code pattern, they will understand how to:
 2. Python 3
     1. requests module
 
+## Demo
+
+[![Demo](https://img.youtube.com/vi/Ik6YvPBplHY/0.jpg)](https://www.youtube.com/watch?v=Ik6YvPBplHY)
+
 ## Flow
 
 ![Flow](flow.png)
