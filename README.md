@@ -17,7 +17,7 @@ When the reader has completed this code pattern, they will understand how to:
 
 ## Demo
 
-[![Demo](https://img.youtube.com/vi/Ik6YvPBplHY/0.jpg)](https://www.youtube.com/watch?v=Ik6YvPBplHY)
+[![Movie Explorer Demo](https://yt-embed.herokuapp.com/embed?v=Ik6YvPBplHY)](https://www.youtube.com/watch?v=Ik6YvPBplHY "Movie Explorer Demo")
 
 ## Flow
 
