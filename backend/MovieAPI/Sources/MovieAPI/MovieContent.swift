@@ -53,7 +53,7 @@ class MovieContent {
         }
         let response: Db2Handler.QueryResponse<Movie> =
             try await db2Handler.runSyncJob(service: "GetMovieByID", version: "1.0",
-                                            parameters: ["movieId": id])
+                                            parameters: ["@movieId": id])
         guard let results = response.resultSet else {
             return nil
         }
@@ -67,7 +67,7 @@ class MovieContent {
     func movies(by name: String) async throws -> Search {
         let job: Db2Handler.Job<Movie> =
             try await db2Handler.runAsyncJob(service: "GetMoviesByName", version: "1.0",
-                                             parameters: ["title": name], limit: 10)
+                                             parameters: ["@title": name], limit: 10)
         return Search(query: name, job: job)
     }
     
@@ -77,7 +77,7 @@ class MovieContent {
         }
         let response: Db2Handler.QueryResponse<MovieGenreLink> =
             try await db2Handler.runSyncJob(service: "GetMovieGenres", version: "1.0",
-                                            parameters: ["movieId": movie.movieID])
+                                            parameters: ["@movieId": movie.movieID])
         guard let results = response.resultSet else {
             return nil
         }
@@ -92,7 +92,7 @@ class MovieContent {
         }
         let response: Db2Handler.QueryResponse<MovieProductionCompanyLink> =
             try await db2Handler.runSyncJob(service: "GetMovieProductionCompanies", version: "1.0",
-                                            parameters: ["movieId": movie.movieID])
+                                            parameters: ["@movieId": movie.movieID])
         guard let results = response.resultSet else {
             return nil
         }
@@ -110,7 +110,7 @@ class MovieContent {
 
 		let recommendationResponse: Db2Handler.QueryResponse<MovieRecommendation> =
 			try await db2Handler.runSyncJob(service: "GetMovieRecommendations", version: "1.0",
-									        parameters: ["queryId": queryID])
+									        parameters: ["@queryId": queryID])
 		let recommendations = (recommendationResponse.resultSet ?? []).map { $0.movieID }
 
 		let deleteStatement = "DELETE FROM RATINGS WHERE QUERYID=\(queryID)"

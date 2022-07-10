@@ -101,7 +101,7 @@ if __name__ == "__main__":
       "expiryTime": "24h"
     }
 
-    rest_endpoint = "http://host.docker.internal:50050"
+    rest_endpoint = "http://localhost:50050"
 
     token = authenticate(rest_endpoint, auth_body)
 

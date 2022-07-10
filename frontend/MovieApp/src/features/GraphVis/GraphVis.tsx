@@ -14,7 +14,7 @@ const makeQueries = (type: AvailableQueries, movieid: number) => {
     transforms: [],
   };
   if (type === 'SamePrductionSameGenre') {
-    queryObj.query = `V().has('DB2INST1.MOVIES', 'MOVIEID', ${movieid}).as('movie').out('DB2INST1.MOVIE_GENRES').as('g').in().where(eq('movie')).out('DB2INST1.MOVIE_PRODUCTION_COMPANIES').in().as('movies').where(__.as('movies').out('DB2INST1.MOVIE_GENRES').as('g')).select('movies').limit(50)`;
+    queryObj.query = `V().has('MOVIES', 'MOVIEID', ${movieid}).as('movie').out('MOVIE_GENRES').as('g').in().where(eq('movie')).out('MOVIE_PRODUCTION_COMPANIES').in().as('movies').where(__.as('movies').out('MOVIE_GENRES').as('g')).select('movies').limit(50)`;
     queryObj.transforms = [
       {
         operation: 'adjustColour',
