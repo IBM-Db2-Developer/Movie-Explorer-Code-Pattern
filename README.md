@@ -88,25 +88,23 @@ Be careful when running this container — it takes a few minutes for Db2 to rea
 Then, we can deploy Db2 REST. The following command will:
 
 - Create a container called `db2rest`.
-- Specify the hostname of the server running the Db2 container (you must set this value in the command).
 - Expose Db2 REST's port `50050` to `50050` on the host.
 - Accept the license agreement.
 - Disable TLS (to keep this example simpler).
 
 ```bash
-docker run -it --name=db2rest --hostname=<INSERT HOSTNAME> -p 50050:50050 -e LICENSE=accept -e DB2REST_USE_HTTP=true icr.io/obs/hdm/db2rest:latest-amd64
+docker run -it --name=db2rest -p 50050:50050 -e LICENSE=accept -e DB2REST_USE_HTTP=true icr.io/obs/hdm/db2rest:latest-amd64
 ```
 
 The container will prompt you to hit `Ctrl-P Ctrl-Q` once it has started, so you can exit. Once that's done, you can deploy Db2 Graph. The following command will:
 
 - Create a container called `db2graph`.
-- Specify the hostname of the server running the Db2 container (you must set this value in the command).
 - Mount `/root/db2graphstorage` as the location on the host where Db2 Graph within the container actually stores its data.
 - Expose Db2 Graph's ports `8182` and `3000` to `8192` and `3000` on the host, respectively.
 - Accept the license agreement.
 
 ```bash
-docker run -it --name=db2graph --hostname=<INSERT HOSTNAME> -v /root/db2graphstorage:/db2graph -p 8182:8182 -p 3000:3000 -e LICENSE=accept icr.io/obs/hdm/db2graph:latest-amd64
+docker run -it --name=db2graph -v /root/db2graphstorage:/db2graph -p 8182:8182 -p 3000:3000 -e LICENSE=accept icr.io/obs/hdm/db2graph:latest-amd64
 ```
 
 This container will once again prompt you to hit `Ctrl-P Ctrl-Q` once it has started, so you can exit.
@@ -181,7 +179,7 @@ docker exec -it movie_db2 su - db2inst1 -c "db2 -tvf /setup.sql"
 This will unzip the movie data and run the setup SQL script. The script will create the tables, load the data, and setup the UDF. However, before we're done setting everything up, we need to do a bit more ceremony for the UDF to execute properly:
 
 ```bash
-docker exec -it movie_db2 yum install -y python3
+docker exec -it movie_db2 yum install -y python3 libnsl
 docker exec -it movie_db2 su - db2fenc1 -c "python3 -m pip install -U --user pip"
 docker exec -it movie_db2 su - db2fenc1 -c "python3 -m pip install turicreate"
 docker exec movie_db2 chown db2fenc1 /database/config/db2fenc1/rec_udf.py
@@ -224,7 +222,7 @@ root@bluejay3:~/MovieRecommenderApplication/setup/rest# docker exec -it db2graph
 Enter sessionName: setup_session
 Enter connectionName: MovieDB
 Enter description: 
-Enter hostname: host.docker.internal
+Enter hostname: <YOUR HOSTNAME>
 Use SSL [y/N (default)]: N
 Enter port [50000]: 
 Enter database: MOVIES
